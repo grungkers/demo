@@ -29,14 +29,6 @@ class PhoneBookingServiceTests {
 	@Autowired
 	private lateinit var bookingTxnRepository: BookingTxnRepository
 
-//	@InjectMocks
-//	private lateinit var jmsTemplate: StringTemplate
-//
-//	@Before
-//	fun prepare() {
-//		MockitoAnnotations.initMocks(this)
-//	}
-
 	@Test
 	fun userFindAllDevices() {
 		val devices = bookingService.findCirculationDevices()
@@ -53,7 +45,7 @@ class PhoneBookingServiceTests {
 		var availableTypeDevices = 0
 		var unavailableTypeDevice = 0
 		devices.toList().stream().forEach {
-			if(it.isAvailable)
+			if(it.isAvailable())
 				availableTypeDevices++
 			else
 				unavailableTypeDevice++
@@ -112,7 +104,7 @@ class PhoneBookingServiceTests {
 		assert(devices.toList().sumOf { it.quantity } == 8)
 		devices.forEach{
 			if(it.model.equals("Samsung Galaxy S8")) {
-				assertTrue(it.isAvailable == false, "Samsung Galaxy S8 fully booked")
+				assertTrue(it.isAvailable() == false, "Samsung Galaxy S8 fully booked")
 				it.transactions?.forEachIndexed{ index, it ->
 					Assertions.assertThat(it.borrower.role).isIn(User.Roles.TESTER, User.Roles.ADMIN)
 					assertNotNull(it.fromDate, "Samsung Galaxy S8 $index borrowed at ${it.fromDate}")
@@ -134,6 +126,18 @@ class PhoneBookingServiceTests {
 		val tester = userRepository.findById(1).get()
 		val iPhoneX = phoneDeviceRepository.findByModel("iPhone X")
 		assertThrows(ResponseStatusException::class.java, { bookingService.returnDevice(tester, iPhoneX) })
+	}
+
+	@Test
+	fun transactionCountShouldZeroWhenAllDeviceAvailable() {
+		val tester = userRepository.findById(1).get()
+		val iPhoneX = phoneDeviceRepository.findByModel("iPhone X")
+		bookingService.borrowDevice(tester, iPhoneX)
+		bookingService.returnDevice(tester, iPhoneX)
+		bookingService.borrowDevice(tester, iPhoneX)
+		bookingService.returnDevice(tester, iPhoneX)
+		val devices = bookingService.findCirculationDevices()
+		assert((devices[0].transactions?.size?: 0) == 0)
 	}
 
 }

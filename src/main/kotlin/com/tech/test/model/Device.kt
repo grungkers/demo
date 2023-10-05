@@ -20,6 +20,5 @@ class Device(
         this.id = id
     }
 
-    var isAvailable = false
-        get() = this.quantity > 0
+    fun isAvailable() = this.quantity > 0
 }

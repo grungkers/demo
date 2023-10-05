@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository
 interface PhoneDeviceRepository: CrudRepository<Device, Int> {
     fun findByModel(model: String): Device
 
-    @Query("SELECT d FROM Device d LEFT JOIN FETCH d.transactions t WHERE t.returnedDate IS NULL OR d.quantity > 0")
+    @Query("SELECT d FROM Device d LEFT JOIN d.transactions t ON t.returnedDate IS NULL")
     override fun findAll(): List<Device>
 }
