@@ -1,0 +1,192 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "Phone Device Booking App",
+        "version": "1.0.0",
+        "description": "A service that allows a phone to be booked / returned."
+    },
+    "servers": [
+        {
+            "url": "http://localhost:8080/api"
+        }
+    ],
+    "paths": {
+        "/phones": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PhoneDevice"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Operation Response"
+                    }
+                },
+                "operationId": "getPhones"
+            }
+        },
+        "/phones/{phoneId}/booking": {
+            "put": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingTransaction"
+                                }
+                            }
+                        },
+                        "description": "Returning transaction detail of phone booking"
+                    }
+                },
+                "operationId": "bookPhone"
+            },
+            "parameters": [
+                {
+                    "name": "phoneId",
+                    "description": "phone device id",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/phones/{phoneId}/return": {
+            "put": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookingTransaction"
+                                }
+                            }
+                        },
+                        "description": "Showing transaction detail of returning phone"
+                    }
+                },
+                "operationId": "returnPhone"
+            },
+            "parameters": [
+                {
+                    "name": "phoneId",
+                    "schema": {
+                        "type": "integer"
+                    },
+                    "in": "path",
+                    "required": true
+                }
+            ]
+        },
+        "/users": {
+            "get": {
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/User"
+                                    }
+                                }
+                            }
+                        },
+                        "description": "Operation Response"
+                    }
+                },
+                "operationId": "getUsers"
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Error": {
+                "required": [
+                    "code",
+                    "message"
+                ],
+                "properties": {
+                    "code": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PhoneDevice": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "model": {
+                        "type": "string"
+                    },
+                    "available": {
+                        "type": "boolean"
+                    },
+                    "transactions": {
+                        "description": "",
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/BookingTransaction"
+                        }
+                    }
+                }
+            },
+            "BookingTransaction": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "fromDate": {
+                        "description": "",
+                        "type": "string"
+                    },
+                    "borrowerName": {
+                        "description": "",
+                        "type": "string"
+                    }
+                }
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "format": "int32",
+                        "type": "integer"
+                    },
+                    "username": {
+                        "type": "string"
+                    },
+                    "pwd": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "role": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}
